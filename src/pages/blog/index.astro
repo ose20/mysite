@@ -1,114 +1,156 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import BlogPostCard from "../../components/BlogPostCard.astro";
+import BlogTagFilter from "../../components/BlogTagFilter.astro";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import RssIcon from "../../components/icons/RssIcon.astro";
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection("blog"))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.map((post) => ({
+		id: post.id,
+		title: post.data.title,
+		pubDate: post.data.pubDate,
+		tags: post.data.tags ?? [],
+	}));
+
+const tags = Array.from(new Set(posts.flatMap((post) => post.tags))).sort((a, b) => a.localeCompare(b, "ja"));
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title="Blog" description="記事一覧とタグ別の絞り込み" />
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section>
-				<ul>
+		<main class="blog-page">
+			<section class="blog-hero">
+				<a class="blog-rss" href="/rss.xml" aria-label="RSS" title="RSS">
+					<RssIcon />
+				</a>
+			</section>
+
+			<BlogTagFilter tags={tags} />
+
+			<section class="blog-list-section" aria-labelledby="blog-list-title">
+				<h2 id="blog-list-title" class="sr-only">記事一覧</h2>
+				<div class="blog-list">
 					{
 						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
+							<BlogPostCard
+								href={`/blog/${post.id}/`}
+								title={post.title}
+								pubDate={post.pubDate}
+								tags={post.tags}
+							/>
 						))
 					}
-				</ul>
+				</div>
 			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.blog-page {
+		/* what: blog 一覧全体の本文幅を整える */
+		max-width: 74rem;
+		margin: 0 auto;
+		padding: 3rem 1.25rem 4rem;
+	}
+
+	.blog-hero {
+		/* what: タグ絞り込みの上に補助アクションだけを置く行 */
+		/* how: flex の justify-content: end で、中身を右端へ寄せる */
+		display: flex;
+		justify-content: end;
+		margin-bottom: 1.15rem;
+	}
+
+	.blog-rss {
+		/* what: RSS への導線を、角丸の小さなアイコンボタンで表示する */
+		/* how: inline-flex で中の SVG を中央に置き、border と background で他の UI と質感をそろえる */
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.0rem;
+		height: 2.0rem;
+		border: 1px solid var(--header-border);
+		border-radius: 10px;
+		background-color: var(--surface-background);
+		color: var(--muted-text-color);
+		text-decoration: none;
+		transition:
+			border-color 150ms ease,
+			background-color 150ms ease,
+			color 150ms ease;
+	}
+
+	.blog-rss svg {
+		display: block;
+		width: 1.15rem;
+		height: 1.15rem;
+	}
+
+	.blog-rss:hover,
+	.blog-rss:focus-visible {
+		border-color: var(--nav-active-border);
+		background-color: var(--nav-active-background);
+		color: var(--nav-active-text);
+		outline: none;
+	}
+
+	.blog-list-section {
+		margin-top: 2rem;
+	}
+
+	.blog-list {
+		/* what: 記事カード一覧を 2 列グリッドにする */
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.sr-only {
+		/* what: 画面には見せず、読み上げソフトには伝える見出し */
+		/* how: 要素サイズをほぼ 0 にして画面外扱いにする定番の書き方 */
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	@media (max-width: 720px) {
+		.blog-page {
+			padding: 2rem 1rem 3rem;
+		}
+
+		.blog-hero {
+			margin-bottom: 1rem;
+		}
+
+		.blog-rss {
+			padding: 0.3rem;
+			width: 1.7rem;
+			height: 1.7rem;
+		}
+
+		.blog-list-section {
+			margin-top: 1.6rem;
+		}
+
+		.blog-list {
+			/* モバイルではカードを 1 列にして横の圧迫を防ぐ */
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

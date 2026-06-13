@@ -1,85 +1,232 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import PostSharePanel from '../components/PostSharePanel.astro';
+import PostHeroImage from '../components/PostHeroImage.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import type { MarkdownHeading } from 'astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	headings: MarkdownHeading[];
+}
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const articleUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const pageDescription = description ?? `${title} に関する記事です。`;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={pageDescription} />
 		<style>
 			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
+				/* what: 記事ページ全体の横幅と余白 */
+				max-width: 78rem;
+				margin: 0 auto;
+				padding: 2.75rem 1.25rem 4rem;
 			}
 			.hero-image {
 				width: 100%;
 			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+			.post-layout {
+				/* what: PC では「本文 + 右サイドバー」の 2 列に分ける */
+				/* how: 1 列目は余った幅を使い、2 列目は 18rem に固定する */
+				display: grid;
+				grid-template-columns: minmax(0, 1fr) 18rem;
+				gap: 1.5rem;
+				align-items: start;
+			}
+			.post-content {
+				min-width: 0;
+			}
+			.post-shell {
+				/* what: 本文本体を囲むカード */
+				padding: 1.25rem;
+				border: 1px solid var(--header-border);
+				border-radius: 14px;
+				background-color: var(--surface-background);
 			}
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
+				max-width: 100%;
+				margin: 0;
+				padding: 0;
+				color: var(--text-color);
 			}
 			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
+				margin-bottom: 1.5rem;
+				padding: 1.1rem 0 1.25rem;
+				border-bottom: 1px solid var(--header-border);
 			}
 			.title h1 {
-				margin: 0 0 0.5em 0;
+				margin: 0.65rem 0 0;
+				color: var(--post-title-color);
+				font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", "Noto Sans CJK JP", sans-serif;
+				font-size: 2.1rem;
+				font-weight: 600;
+				line-height: 1.25;
 			}
 			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
+				margin: 0;
+				color: var(--muted-text-color);
+				font-size: 0.88rem;
+				letter-spacing: 0.03em;
 			}
 			.last-updated-on {
-				font-style: italic;
+				display: block;
+				margin-top: 0.35rem;
+				font-style: normal;
+			}
+			.prose :global(h2),
+			.prose :global(h3),
+			.prose :global(h4) {
+				font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", "Noto Sans CJK JP", sans-serif;
+				line-height: 1.35;
+			}
+			.prose :global(h2) {
+				/* h2 は本文の大きな区切りなので、本文色から少し離した青系と下線でメリハリを付ける */
+				color: var(--heading-2-color);
+				margin-top: 2.4rem;
+				padding-bottom: 0.45rem;
+				border-bottom: 2px solid var(--heading-2-border);
+			}
+			.prose :global(h3),
+			.prose :global(h4) {
+				color: var(--text-color);
+			}
+			.prose :global(p),
+			.prose :global(li),
+			.prose :global(blockquote) {
+				color: var(--text-color);
+			}
+			.prose :global(a) {
+				/* 本文リンクは通常文と区別できる色にしつつ、ダーク背景でも読みやすい明るさを保つ */
+				color: var(--prose-link-color);
+				text-decoration-thickness: 0.08em;
+				text-underline-offset: 0.16em;
+			}
+			.prose :global(a:hover),
+			.prose :global(a:focus-visible) {
+				color: var(--prose-link-hover-color);
+			}
+			.prose :global(img) {
+				/* max-width: 100% で本文幅を超えないようにし、height: auto で縦横比を保つ */
+				display: block;
+				max-width: 100%;
+				height: auto;
+				margin: 1.25rem auto;
+				border-radius: 12px;
+			}
+			.prose :global(figure) {
+				margin: 1.5rem 0;
+			}
+			.prose :global(figure img) {
+				margin: 0;
+			}
+			.prose :global(figcaption) {
+				margin-top: 0.6rem;
+				color: var(--muted-text-color);
+				font-size: 0.82rem;
+				line-height: 1.6;
+				text-align: center;
+			}
+			.post-sidebar {
+				/* what: PC では右カラムをスクロール中も見える位置に保つ */
+				/* how: position: sticky は「ある位置までは普通に流れ、その後は貼り付く」配置 */
+				position: sticky;
+				top: 1.25rem;
+				display: grid;
+				gap: 1rem;
+				align-self: start;
+			}
+			.post-mobile-toc,
+			.post-mobile-share {
+				display: none;
+			}
+			@media (max-width: 720px) {
+				main {
+					/* モバイルでは左右余白を少し詰める */
+					padding: 2rem 1rem 3rem;
+				}
+				.post-layout {
+					/* モバイルでは 1 列だけに戻す */
+					grid-template-columns: minmax(0, 1fr);
+					gap: 1rem;
+				}
+				.title {
+					margin-bottom: 1.2rem;
+					padding: 0.9rem 0 1rem;
+				}
+				.title h1 {
+					font-size: 1.7rem;
+				}
+				.date {
+					font-size: 0.82rem;
+				}
+				.post-shell {
+					padding: 1rem;
+				}
+				.post-sidebar {
+					display: none;
+				}
+				.post-mobile-toc,
+				.post-mobile-share {
+					display: block;
+				}
+				.post-mobile-toc {
+					margin-bottom: 1rem;
+				}
+				.post-mobile-share {
+					margin-top: 1rem;
+				}
 			}
 		</style>
 	</head>
 
 	<body>
 		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+		<main class="post-layout">
+			<article class="post-content">
+				<!-- モバイルでは目次を本文の前へ移したいので、ここに折りたたみ版を置く -->
+				<div class="post-mobile-toc">
+					<TableOfContents headings={Astro.props.headings} collapsible={true} />
 				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+
+				<div class="post-shell">
+					<div class="hero-image">
+						{heroImage && <PostHeroImage src={heroImage} alt="" />}
 					</div>
-					<slot />
+					<div class="prose">
+						<div class="title">
+							<div class="date">
+								<FormattedDate date={pubDate} />
+								{
+									updatedDate && (
+										<span class="last-updated-on">
+											Last updated on <FormattedDate date={updatedDate} />
+										</span>
+									)
+								}
+							</div>
+							<h1>{title}</h1>
+						</div>
+						<slot />
+					</div>
+				</div>
+
+				<!-- モバイルでは共有ボタンを本文の後ろへ移す -->
+				<div class="post-mobile-share">
+					<PostSharePanel title={title} url={articleUrl} />
 				</div>
 			</article>
+
+			<!-- PC 幅では共有と目次を右カラムに固定表示する -->
+			<aside class="post-sidebar">
+				<PostSharePanel title={title} url={articleUrl} />
+				<TableOfContents headings={Astro.props.headings} />
+			</aside>
 		</main>
 		<Footer />
 	</body>

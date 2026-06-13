@@ -1,0 +1,225 @@
+---
+type Heading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+type Props = {
+  headings: Heading[];
+  collapsible?: boolean;
+};
+
+const { headings, collapsible = false } = Astro.props;
+
+// what: 目次に載せる見出しだけを抜き出す
+// how: h1 は記事タイトルなので除外し、本文の区切りとして使う h2 と h3 だけを対象にする
+const toHeadings = (headings ?? []).filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{
+  collapsible ? (
+    <details class="toc-disclosure side-panel">
+      <summary class="toc-summary">
+        <span class="toc-title side-panel-title">目次</span>
+      </summary>
+
+      {
+        toHeadings.length > 0 ? (
+          <ol class="toc-list">
+            {toHeadings.map((h) => (
+              <li class={`depth-${h.depth}`}>
+                <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="toc-empty side-panel-copy">見出しがまだないため、目次は表示されません。</p>
+        )
+      }
+    </details>
+  ) : (
+    <nav class="toc-nav side-panel" aria-label="記事の目次">
+      <p class="toc-title side-panel-title">目次</p>
+
+      {
+        toHeadings.length > 0 ? (
+          <ol class="toc-list">
+            {toHeadings.map((h) => (
+              <li class={`depth-${h.depth}`}>
+                <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="toc-empty side-panel-copy">見出しがまだないため、目次は表示されません。</p>
+        )
+      }
+    </nav>
+  )
+}
+
+<script>
+  // 本文側の見出しと目次リンクを対応付けて、スクロール位置に応じて active を切り替える
+  const headings = Array.from(
+    document.querySelectorAll("article h2[id], article h3[id]")
+  );
+
+  const links = new Map(
+    Array.from(
+      document.querySelectorAll("[data-toc-link]")
+    ).map((link) => [
+      link.getAttribute("data-toc-link"),
+      link,
+    ])
+  );
+
+  const activate = (id: string) => {
+    document
+      .querySelectorAll("[data-toc-link].active")
+      .forEach((link) => link.classList.remove("active"));
+
+    links.get(id)?.classList.add("active");
+  };
+
+  const getCurrentHeadingId = () => {
+    // 固定ヘッダーの分だけ少し下の位置を「今読んでいる場所」として扱う
+    const offset = 120;
+
+    let current = headings[0];
+
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= offset) {
+        current = heading;
+      } else {
+        break;
+      }
+    }
+
+    return current?.id;
+  };
+
+  const updateCurrentHeading = () => {
+    const id = getCurrentHeadingId();
+    if (id) {
+      activate(id);
+    }
+  };
+
+  updateCurrentHeading();
+  window.addEventListener("scroll", updateCurrentHeading, { passive: true });
+  window.addEventListener("resize", updateCurrentHeading);
+</script>
+
+<style>
+  .side-panel {
+    /* what: 右カラムやモバイルで使う「小さな情報カード」の共通見た目 */
+    padding: 1.1rem 1.15rem;
+    border: 1px solid var(--header-border);
+    border-radius: 12px;
+    background-color: var(--surface-background);
+  }
+
+  .side-panel-title,
+  .side-panel-copy {
+    margin: 0;
+  }
+
+  .side-panel-title {
+    color: var(--post-title-color);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .side-panel-copy {
+    color: var(--muted-text-color);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .toc-list {
+    /* what: ul/ol の初期スタイルを消して、独自の目次見た目にする */
+    margin: 0.9rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc-list li + li {
+    margin-top: 0.65rem;
+  }
+
+  .toc-list a {
+    color: var(--muted-text-color);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .toc-list a:hover,
+  .toc-list a:focus-visible,
+  .toc-list a.active {
+    color: var(--post-title-color);
+    outline: none;
+  }
+
+  .toc-list .depth-3 {
+    padding-left: 0.8rem;
+  }
+
+  .toc-empty {
+    margin-top: 0.5rem;
+  }
+
+  .toc-disclosure {
+    padding: 0;
+  }
+
+  .toc-summary {
+    /* what: details の見出し行 */
+    /* how: summary 自体を flex にすると、左にタイトル、右に + / - を置きやすい */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.15rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .toc-summary::-webkit-details-marker {
+    /* ブラウザ標準の三角マーカーを消して、自前の + / - を使う */
+    display: none;
+  }
+
+  .toc-disclosure .toc-list,
+  .toc-disclosure .toc-empty {
+    margin-right: 1.15rem;
+    margin-left: 1.15rem;
+  }
+
+  .toc-disclosure .toc-list {
+    margin-top: 0;
+    margin-bottom: 1.1rem;
+  }
+
+  .toc-disclosure .toc-empty {
+    margin-top: 0;
+    margin-bottom: 1.1rem;
+  }
+
+  .toc-summary::after {
+    content: "+";
+    color: var(--muted-text-color);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .toc-disclosure[open] .toc-summary::after {
+    content: "-";
+  }
+</style>

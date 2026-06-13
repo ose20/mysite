@@ -1,0 +1,103 @@
+---
+interface Props {
+	currentPath: string;
+}
+
+const navItems = [
+	{ label: "記事", href: "/blog" },
+	{ label: "仕事", href: "/work" },
+	{ label: "政治・社会", href: "/politics-society" },
+	{ label: "私について", href: "/about" },
+];
+
+const { currentPath } = Astro.props;
+
+// what: 現在のページに対応するナビだけを active にする
+// how: 完全一致に加えて /blog/foo のような配下ページも startsWith で拾う
+const isActivePath = (href: string) => currentPath === href || currentPath.startsWith(`${href}/`);
+---
+
+<nav class="site-nav" aria-label="主要ナビゲーション">
+	<ul class="site-nav-list">
+		{navItems.map((item) => (
+			<li>
+				<a
+					class:list={["site-nav-link", { "is-active": isActivePath(item.href) }]}
+					href={item.href}
+					aria-current={isActivePath(item.href) ? "page" : undefined}
+				>
+					{item.label}
+				</a>
+			</li>
+		))}
+	</ul>
+</nav>
+
+<style>
+	.site-nav-list {
+		/* what: ナビ項目を横一列に並べる */
+		/* how: flex を使うと子要素を自然に横へ並べられる。wrap を付けると幅が足りないときは次の行へ折り返す */
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.8rem 1.8rem;
+
+		margin: 0;
+		padding: 0.85rem 0 0;
+
+		list-style: none;
+	}
+
+	.site-nav-link {
+		/* what: 各リンクを押しやすいボタン風の見た目にする */
+		/* how: inline-flex で文字を中央寄せしつつ、padding で当たり判定を広げる */
+		display: inline-flex;
+		align-items: center;
+		padding: 0.28rem 0.72rem;
+		border: 1px solid transparent;
+		border-radius: 10px;
+		color: var(--muted-text-color);
+		font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", sans-serif;
+		font-size: 0.94rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			color 150ms ease,
+			opacity 150ms ease,
+			background-color 150ms ease,
+			border-color 150ms ease;
+	}
+
+	.site-nav-link:hover,
+	.site-nav-link:focus-visible {
+		color: var(--text-color);
+		opacity: 1;
+		text-decoration: underline;
+		text-underline-offset: 0.16em;
+	}
+
+	.site-nav-link.is-active {
+		border-color: var(--nav-active-border);
+		background-color: var(--nav-active-background);
+		color: var(--nav-active-text);
+		font-weight: 600;
+	}
+
+	@media (max-width: 720px) {
+		.site-nav-list {
+			/* what: モバイルでは縦に並ぶメニューへ切り替える */
+			/* how: grid を 1 列のまま使うと、各リンクを行ごとにきれいに積める */
+			display: grid;
+			justify-content: stretch;
+			gap: 0.7rem;
+			padding-top: 0.9rem;
+		}
+
+		.site-nav-link {
+			justify-content: center;
+			padding: 0.7rem 0.9rem;
+		}
+	}
+</style>

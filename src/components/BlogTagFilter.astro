@@ -1,0 +1,191 @@
+---
+interface Props {
+	tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+<section class="tag-filter" aria-labelledby="tag-filter-title">
+	<div class="tag-filter-head">
+		<h2 id="tag-filter-title" class="tag-filter-title">タグ絞り込み</h2>
+	</div>
+	<div class="tag-filter-list" role="toolbar" aria-label="タグ絞り込み">
+		<button class="tag-filter-button is-active" type="button" data-filter="all">All</button>
+		{
+			tags.map((tag) => (
+				<button class="tag-filter-button" type="button" data-filter={tag.toLowerCase()}>{tag}</button>
+			))
+		}
+	</div>
+</section>
+
+<script is:inline>
+	let hasInitialized = false;
+
+	// what: タグ絞り込みを初期化する
+	// how: ボタンと記事カードの両方が DOM にそろった時点で、イベント設定と絞り込み処理を結び付ける
+	const setupTagFilter = () => {
+		if (hasInitialized) {
+			return;
+		}
+
+		const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+		const cards = Array.from(document.querySelectorAll("[data-post-card]"));
+
+		if (buttons.length === 0 || cards.length === 0) {
+			return;
+		}
+
+		hasInitialized = true;
+		const allButton = buttons.find((button) => button.dataset.filter === "all");
+
+		// what: 現在 on になっている通常タグだけを集める
+		// how: All は除外して、is-active が付いているボタンの data-filter を配列にする
+		const getSelectedTags = () =>
+			buttons
+				.filter((button) => button.dataset.filter !== "all" && button.classList.contains("is-active"))
+				.map((button) => button.dataset.filter)
+				.filter(Boolean);
+
+		// what: ボタンの active 表示と aria-pressed を同期する
+		// how: on/off の真偽値を class と aria 属性の両方へ反映する
+		const setButtonState = (button, isActive) => {
+			button.classList.toggle("is-active", isActive);
+			button.setAttribute("aria-pressed", String(isActive));
+		};
+
+		// what: 選択中タグの AND 条件で記事一覧を絞り込む
+		// how: 選択タグが 0 個なら全件表示し、1 個以上なら「そのタグを全部含む記事」だけ残す
+		const applyFilter = () => {
+			const selectedTags = getSelectedTags();
+			const isAll = selectedTags.length === 0;
+
+			if (allButton) {
+				setButtonState(allButton, isAll);
+			}
+
+			for (const card of cards) {
+				const cardTags = (card.dataset.tags ?? "").split("|").filter(Boolean);
+				const matches = isAll || selectedTags.every((tag) => cardTags.includes(tag));
+				card.classList.toggle("is-filter-hidden", !matches);
+			}
+		};
+
+		for (const button of buttons) {
+			button.setAttribute("aria-pressed", String(button.classList.contains("is-active")));
+			button.addEventListener("click", () => {
+				const filter = button.dataset.filter;
+				if (!filter) {
+					return;
+				}
+
+				if (filter === "all") {
+					for (const otherButton of buttons) {
+						setButtonState(otherButton, otherButton.dataset.filter === "all");
+					}
+					applyFilter();
+					return;
+				}
+
+				if (allButton) {
+					setButtonState(allButton, false);
+				}
+
+				setButtonState(button, !button.classList.contains("is-active"));
+
+				if (getSelectedTags().length === 0 && allButton) {
+					setButtonState(allButton, true);
+				}
+
+				applyFilter();
+			});
+		}
+
+		applyFilter();
+	};
+
+	// HTML の後半にある記事カードがまだ来ていない場合があるので、複数のタイミングで初期化を試す
+	setupTagFilter();
+	document.addEventListener("DOMContentLoaded", setupTagFilter, { once: true });
+	document.addEventListener("astro:page-load", setupTagFilter);
+	requestAnimationFrame(setupTagFilter);
+</script>
+
+<style>
+	.tag-filter {
+		/* what: 見出し行とボタン行を縦に積む */
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.tag-filter-head {
+		/* what: タイトル行 */
+		display: flex;
+		align-items: baseline;
+		margin-bottom: 0;
+	}
+
+	.tag-filter-title {
+		margin: 0;
+	}
+
+	.tag-filter-title {
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+	}
+
+	.tag-filter-list {
+		/* what: タグボタンを横に並べ、入りきらなければ折り返す */
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
+	}
+
+	.tag-filter-button {
+		/* what: タグごとの絞り込みボタン */
+		/* how: border-radius: 999px は丸薬型のボタンを作る定番の書き方 */
+		padding: 0.42rem 0.72rem;
+		border: 1px solid var(--header-border);
+		border-radius: 999px;
+		background-color: var(--surface-background);
+		color: var(--muted-text-color);
+		font: inherit;
+		font-size: 0.84rem;
+		cursor: pointer;
+		transition:
+			border-color 150ms ease,
+			background-color 150ms ease,
+			color 150ms ease;
+	}
+
+	.tag-filter-button:hover,
+	.tag-filter-button:focus-visible,
+	.tag-filter-button.is-active {
+		border-color: var(--site-title-color);
+		background-color: var(--surface-hover);
+		color: var(--text-color);
+		outline: none;
+	}
+
+	@media (max-width: 720px) {
+		.tag-filter {
+			gap: 0.8rem;
+		}
+
+		.tag-filter-title {
+			font-size: 0.96rem;
+		}
+
+		.tag-filter-list {
+			gap: 0.55rem;
+		}
+
+		.tag-filter-button {
+			/* モバイルでは文字と余白を少し小さくして詰める */
+			padding: 0.38rem 0.66rem;
+			font-size: 0.8rem;
+		}
+	}
+</style>

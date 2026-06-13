@@ -1,85 +1,468 @@
 ---
-import { SITE_TITLE } from '../consts';
-import HeaderLink from './HeaderLink.astro';
+import HeaderNav from "./HeaderNav.astro";
+
+const currentPath = Astro.url.pathname;
 ---
 
-<header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
-		</div>
-		<div class="social-links">
-			<a href="https://m.webtoo.ls/@astro" target="_blank">
-				<span class="sr-only">Follow Astro on Mastodon</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M11.19 12.195c2.016-.24 3.77-1.475 3.99-2.603.348-1.778.32-4.339.32-4.339 0-3.47-2.286-4.488-2.286-4.488C12.062.238 10.083.017 8.027 0h-.05C5.92.017 3.942.238 2.79.765c0 0-2.285 1.017-2.285 4.488l-.002.662c-.004.64-.007 1.35.011 2.091.083 3.394.626 6.74 3.78 7.57 1.454.383 2.703.463 3.709.408 1.823-.1 2.847-.647 2.847-.647l-.06-1.317s-1.303.41-2.767.36c-1.45-.05-2.98-.156-3.215-1.928a3.614 3.614 0 0 1-.033-.496s1.424.346 3.228.428c1.103.05 2.137-.064 3.188-.189zm1.613-2.47H11.13v-4.08c0-.859-.364-1.295-1.091-1.295-.804 0-1.207.517-1.207 1.541v2.233H7.168V5.89c0-1.024-.403-1.541-1.207-1.541-.727 0-1.091.436-1.091 1.296v4.079H3.197V5.522c0-.859.22-1.541.66-2.046.456-.505 1.052-.764 1.793-.764.856 0 1.504.328 1.933.983L8 4.39l.417-.695c.429-.655 1.077-.983 1.934-.983.74 0 1.336.259 1.791.764.442.505.661 1.187.661 2.046v4.203z"
-					></path></svg
-				>
+<header class="site-header">
+	<div class="header-shell">
+		<div class="header-inner">
+			<a class="site-owner" href="/" aria-label="ose20のホームページ">
+				<span class="site-icon-frame" aria-hidden="true">
+					<img
+						class="site-icon"
+						src="/icon.png"
+						alt="やわらかい印象の狼のアイコン"
+						width="60"
+						height="60"
+					>
+				</span>
+				<span class="username">ose20</span>
 			</a>
-			<a href="https://twitter.com/astrodotbuild" target="_blank">
-				<span class="sr-only">Follow Astro on Twitter</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"
-					></path></svg
-				>
-			</a>
-			<a href="https://github.com/withastro/astro" target="_blank">
-				<span class="sr-only">Go to Astro's GitHub repo</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-					></path></svg
-				>
-			</a>
-		</div>
-	</nav>
-</header>
-<style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
-	}
-	.social-links,
-	.social-links a {
-		display: flex;
-	}
-	@media (max-width: 720px) {
-		.social-links {
-			display: none;
+			<div class="site-center">
+				<a class="site-title" href="/">
+					<span class="site-title-main">Light for the Afflicted</span>
+					<span class="site-title-sub">苦難に光を</span>
+				</a>
+			</div>
+
+			<button
+				id="menuToggle"
+				class="menu-toggle"
+				type="button"
+				aria-label="メニューを開く"
+				aria-controls="headerNavRow"
+				aria-expanded="false"
+			>
+				<span class="menu-toggle-lines" aria-hidden="true">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+			<button
+				id="themeToggle"
+				class="theme-toggle"
+				type="button"
+				aria-label="ダークモードに切り替え"
+				aria-pressed="false"
+				data-state="light"
+			>
+				<span class="toggle-track" aria-hidden="true">
+					<span class="toggle-icon toggle-icon-sun">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<circle cx="12" cy="12" r="3.5"></circle>
+							<path d="M12 2.5v2.25M12 19.25v2.25M21.5 12h-2.25M4.75 12H2.5M18.72 5.28l-1.59 1.59M6.87 17.13l-1.59 1.59M18.72 18.72l-1.59-1.59M6.87 6.87L5.28 5.28"></path>
+						</svg>
+					</span>
+					<span class="toggle-icon toggle-icon-moon">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M20 14.2A7.9 7.9 0 0 1 9.8 4a8.8 8.8 0 1 0 10.2 10.2Z"></path>
+						</svg>
+					</span>
+					<span class="toggle-thumb"></span>
+				</span>
+			</button>
+		</div>
+
+		<div id="headerNavRow" class="header-nav-row">
+			<HeaderNav currentPath={currentPath} />
+		</div>
+	</div>
+</header>
+
+<script is:inline>
+	// PC とモバイルで同じヘッダーを使うので、先に操作対象の要素をまとめて取っておく
+	const button = document.getElementById("themeToggle");
+	const menuButton = document.getElementById("menuToggle");
+	const navRow = document.getElementById("headerNavRow");
+
+	// what: 最初に使うテーマを決める
+	// how: 保存済みの設定があればそれを使い、なければ OS 側の設定を見る
+	const getPreferredTheme = () => {
+		const localStorageTheme = localStorage.getItem("theme");
+
+		if (localStorageTheme === "light" || localStorageTheme === "dark") {
+			return localStorageTheme;
 		}
-	}
+
+		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			return "dark";
+		} else {
+			return "light";
+		}
+	};
+
+	// what: html に dark クラスとボタン属性を同期して、見た目と状態説明を揃える
+	// how: 受け取った theme から dark/light を判定し、class / data-state / aria-label をまとめて更新する
+	const applyTheme = (theme) => {
+		const isDark = theme === "dark";
+
+		document.documentElement.classList.toggle("dark", isDark);
+
+		button?.setAttribute("data-state", theme);
+		button?.setAttribute("aria-pressed", isDark.toString());
+		button?.setAttribute("aria-label", isDark ? "ライトモードに切り替え" : "ダークモードに切り替え");
+
+		localStorage.setItem("theme", theme);
+	};
+
+	applyTheme(getPreferredTheme());
+
+	button?.addEventListener("click", () => {
+		const isDark = document.documentElement.classList.contains("dark");
+		applyTheme(isDark ? "light" : "dark");
+	});
+
+	// what: 画面幅に応じてメニューの開閉状態を整える
+	// how: PC 幅では nav を常に表示し、モバイル幅では閉じているときだけ hidden を付ける
+	const syncMenuState = () => {
+		const isMobile = window.matchMedia("(max-width: 720px)").matches;
+		if (!isMobile) {
+			navRow?.removeAttribute("hidden");
+			menuButton?.setAttribute("aria-expanded", "false");
+			menuButton?.setAttribute("aria-label", "メニューを開く");
+			return;
+		}
+
+		const expanded = menuButton?.getAttribute("aria-expanded") === "true";
+		if (!expanded) {
+			navRow?.setAttribute("hidden", "");
+		}
+	};
+
+	menuButton?.addEventListener("click", () => {
+		const expanded = menuButton.getAttribute("aria-expanded") === "true";
+		const nextExpanded = (!expanded).toString();
+		menuButton.setAttribute("aria-expanded", nextExpanded);
+		menuButton.setAttribute("aria-label", expanded ? "メニューを開く" : "メニューを閉じる");
+		navRow?.toggleAttribute("hidden", expanded);
+	});
+
+	syncMenuState();
+	window.addEventListener("resize", syncMenuState);
+</script>
+
+<style>
+  .site-header {
+    /* what: ヘッダー全体の背景色と文字色を決める */
+    /* how: 色は直接書かず CSS 変数を使うことで、ライト/ダーク両方に同じ構造で対応する */
+    background-color: var(--header-background);
+    color: var(--text-color);
+  }
+
+  .header-shell {
+    /* what: ヘッダー全体の最大幅を制限する箱 */
+    /* how: max-width で横に広がりすぎるのを防ぎ、margin: 0 auto で中央に置く */
+    max-width: 80rem;
+    margin: 0 auto;
+  }
+
+  .header-inner {
+    /* what: 上段のレイアウトを 3 列に分ける */
+    /* how: grid を使い、左に owner、中央に title、右に各種ボタンを置く */
+    display: grid;
+    /* 1fr は「余った幅を分け合う」という意味。左右が伸びて、中央の auto は中身ぶんの幅だけ使う */
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+
+    min-height: 5.8rem;
+    padding: 0.9rem 1.25rem;
+  }
+
+  .header-nav-row {
+    /* what: ナビゲーション専用の下段 */
+    /* how: 上段と線で区切り、padding で内側の余白を作る */
+    padding: 0 1.25rem 1rem;
+    border-top: 1px solid var(--header-border);
+  }
+
+  .site-owner {
+    /* what: アイコンと ose20 を横並びにする */
+    /* how: flex は子要素を 1 列に並べるレイアウト。align-items: center で高さの中心を揃える */
+    display: flex;
+    align-items: center;
+    justify-self: start;
+    gap: 0.85rem;
+
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-icon-frame {
+    /* what: アイコン画像を丸く切り抜く枠 */
+    /* how: border-radius: 50% で円にし、overflow: hidden で外にはみ出した画像を隠す */
+    width: 3.5rem;
+    height: 3.5rem;
+
+    border-radius: 50%;
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+
+  .site-icon {
+    /* what: 枠の中で画像を大きめに表示して、見せたい位置に寄せる */
+    /* how: object-fit: cover で枠いっぱいに敷き、transform で拡大と位置調整を同時に行う */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.80) translateX(-2%) translateY(+18%);
+    transform-origin: center;
+  }
+
+  .username {
+    font-family: "Trebuchet MS", "Avenir Next", Avenir, "Helvetica Neue", sans-serif;
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: lowercase;
+    color: var(--muted-text-color);
+  }
+
+  .site-center {
+    /* what: タイトルと副題を中央にまとめる箱 */
+    justify-self: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .site-title {
+    /* what: 英語タイトルと日本語副題を縦に積む */
+    /* how: flex-direction: column で並ぶ向きを縦に変える */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--site-title-color);
+    text-decoration: none;
+  }
+
+  .site-title-main {
+    font-family: "Moon Dance", "Hiragino Sans", "Yu Gothic", YuGothic, cursive;
+    font-size: 1.82rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  .site-title-sub {
+    font-family: "Zen Kurenaido", "Hiragino Sans", "Yu Gothic", YuGothic, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+    color: var(--muted-text-color);
+  }
+
+  .theme-toggle {
+    /* what: トグルボタン自体の外枠を消して、中の見た目だけを使う */
+    justify-self: end;
+
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .menu-toggle {
+    /* what: モバイルだけで表示するメニューボタン */
+    /* how: ふだんは display: none で隠し、media query の中で表示する */
+    display: none;
+    justify-self: end;
+    width: 2.75rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--header-border);
+    border-radius: 10px;
+    background-color: var(--surface-background);
+    color: var(--text-color);
+    cursor: pointer;
+  }
+
+  .menu-toggle-lines {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.28rem;
+  }
+
+  .menu-toggle-lines span {
+    display: block;
+    width: 1.1rem;
+    height: 2px;
+    border-radius: 999px;
+    background-color: currentColor;
+  }
+
+  .toggle-track {
+    /* トグル全体のサイズをここに集めておくと、横幅やつまみ位置をまとめて調整しやすい */
+    --track-width: 4.6rem;
+    --track-height: 2.3rem;
+    --track-padding: 0.24rem;
+    --thumb-size: calc(var(--track-height) - (var(--track-padding) * 2));
+    --thumb-translate: calc(var(--track-width) - var(--thumb-size) - (var(--track-padding) * 2) + 0.5rem);
+
+    position: relative;
+    /* what: トグル内の月・太陽・つまみを重ねて配置する土台 */
+    /* how: position: relative を親に置くと、子の absolute はこの箱を基準に動く */
+    display: block;
+    width: var(--track-width);
+    height: var(--track-height);
+    padding: var(--track-padding);
+
+    border-radius: 999px;
+    background-color: var(--toggle-background);
+  }
+
+  .toggle-icon {
+    /* what: 太陽と月のアイコンをトグルの左右に固定する */
+    /* how: position: absolute で親要素の中の好きな場所へ置く */
+    position: absolute;
+    top: 50%;
+    width: 1.65rem;
+    height: 1.65rem;
+
+    color: var(--toggle-icon);
+    opacity: 0.88;
+    transform: translateY(-50%);
+  }
+
+  .toggle-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.9;
+  }
+
+  .toggle-icon-sun {
+    left: 0.52rem;
+  }
+
+  .toggle-icon-moon {
+    right: 0.52rem;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+		/* 見た目の中心に合うように、少しだけ下へ補正している */
+    top: calc(var(--track-padding) + 0.25rem);
+    left: var(--track-padding);
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+
+    border-radius: 50%;
+    background-color: var(--toggle-thumb);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+    transition: transform 150ms ease;
+  }
+
+  .theme-toggle[data-state="dark"] .toggle-thumb {
+    transform: translateX(var(--thumb-translate));
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 0.25rem;
+  }
+
+  @media (max-width: 720px) {
+    .header-inner {
+      /* what: モバイルでは 2 行レイアウトに組み替える */
+      /* how: grid-template-areas で「1行目は title、2行目は owner / menu / toggle」と名前付きで並べる */
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-areas:
+        "center center center"
+        "owner menu toggle";
+      row-gap: 0.9rem;
+
+      min-height: auto;
+      padding: 1rem 1rem 0.9rem;
+    }
+
+    .header-nav-row {
+      /* モバイルでは横幅が狭いので、左右の余白を少し詰める */
+      padding: 0 1rem 1rem;
+    }
+
+    .header-nav-row[hidden] {
+      /* hidden 属性が付いたときだけ、開閉対象の nav 行を消す */
+      display: none;
+    }
+
+    .site-owner {
+      grid-area: owner;
+      gap: 0.65rem;
+    }
+
+    .site-center {
+      grid-area: center;
+      justify-self: center;
+      width: 100%;
+    }
+
+    .theme-toggle {
+      grid-area: toggle;
+      align-self: end;
+    }
+
+    .menu-toggle {
+      display: inline-flex;
+      grid-area: menu;
+      justify-content: center;
+      align-items: center;
+      align-self: end;
+    }
+
+    .site-icon-frame {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+
+    .username {
+      font-size: 1rem;
+    }
+
+    .site-title {
+      gap: 0.1rem;
+    }
+
+    .site-title-main {
+      font-size: 1.5rem;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .site-title-sub {
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    .toggle-track {
+      /* モバイルではトグル全体を少しだけ小さくする */
+      --track-width: 4rem;
+      --track-height: 2rem;
+      --track-padding: 0.22rem;
+      --thumb-size: calc(var(--track-height) - (var(--track-padding) * 2));
+      --thumb-translate: calc(var(--track-width) - var(--thumb-size) - (var(--track-padding) * 2) + 0.08rem);
+    }
+
+    .toggle-icon {
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+
+    .toggle-thumb {
+      top: calc(var(--track-padding) + 0.16rem);
+    }
+  }
 </style>

@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+	src: ImageMetadata;
+	alt?: string;
+}
+
+const { src, alt = "" } = Astro.props;
+---
+
+<!--
+	what: 記事冒頭の hero 画像を共通の見た目で表示する
+	how: Astro の Image で最適化しつつ、CSS では横幅だけをそろえて縦横比は元画像のまま保つ
+-->
+<div class="post-hero-image">
+	<Image class="post-hero-image-asset" src={src} alt={alt} widths={[720, 1020, 1440]} sizes="(max-width: 720px) 100vw, (max-width: 1280px) 70vw, 1020px" />
+</div>
+
+<style>
+	.post-hero-image {
+		/* what: hero 画像の外枠 */
+		width: 100%;
+	}
+
+	.post-hero-image :global(img) {
+		/* width: 100% は親幅いっぱい、height: auto は元画像の比率を保つ、という組み合わせ */
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--header-border);
+		border-radius: 14px;
+		background-color: var(--surface-background);
+	}
+</style>

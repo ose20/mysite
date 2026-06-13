@@ -1,0 +1,144 @@
+---
+interface Props {
+	href: string;
+	title: string;
+	pubDate: Date;
+	tags: string[];
+}
+
+const { href, title, pubDate, tags } = Astro.props;
+const formattedDate = [
+	pubDate.getFullYear(),
+	String(pubDate.getMonth() + 1).padStart(2, "0"),
+	String(pubDate.getDate()).padStart(2, "0"),
+].join("/");
+---
+
+<a class="post-card" href={href} data-post-card data-tags={tags.join("|").toLowerCase()}>
+	<div class="post-card-meta">
+		<p class="post-card-date">
+			<time datetime={pubDate.toISOString()}>{formattedDate}</time>
+		</p>
+		{
+			tags.length > 0 && (
+				<ul class="post-card-tags" aria-label="タグ">
+					{tags.map((tag) => (
+						<li class="post-card-tag">{tag}</li>
+					))}
+				</ul>
+			)
+		}
+	</div>
+	<h2 class="post-card-title">{title}</h2>
+</a>
+
+<style>
+	.post-card {
+		/* what: 記事 1 件ぶんのカード */
+		/* how: block にするとリンク全体を箱として扱え、padding や border を素直に付けられる */
+		display: block;
+		padding: 1.35rem 1.4rem;
+		border: 1px solid var(--header-border);
+		border-radius: 12px;
+		background-color: var(--surface-background);
+		color: inherit;
+		text-decoration: none;
+		transition:
+			transform 150ms ease,
+			border-color 150ms ease,
+			background-color 150ms ease,
+			box-shadow 150ms ease,
+			color 150ms ease;
+	}
+
+	.post-card:hover,
+	.post-card:focus-visible {
+		transform: translateY(-1px);
+		border-color: var(--site-title-color);
+		background-color: var(--surface-hover);
+		box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+		outline: none;
+	}
+
+	.post-card-meta {
+		/* what: 日付とタグを 1 行目にまとめる */
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.65rem 0.9rem;
+		margin-bottom: 0.85rem;
+	}
+
+	.post-card-date {
+		margin: 0;
+		font-size: 0.8rem;
+		letter-spacing: 0.04em;
+		color: var(--muted-text-color);
+	}
+
+	.post-card-tags {
+		/* what: タグを横並びにする */
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.post-card-tag {
+		padding: 0.24rem 0.55rem;
+		border: 1px solid var(--tag-border);
+		border-radius: 999px;
+		background-color: var(--tag-background);
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		color: var(--tag-text);
+	}
+
+	.post-card-title {
+		/* line-height は見出しが 2 行以上になったときの窮屈さを減らす */
+		margin: 0;
+		color: var(--post-title-color);
+		font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", "Noto Sans CJK JP", sans-serif;
+		font-size: 1.24rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		line-height: 1.48;
+		transition: color 150ms ease;
+	}
+
+	.post-card:hover .post-card-title,
+	.post-card:focus-visible .post-card-title {
+		color: var(--post-title-hover-color);
+	}
+
+	.post-card.is-filter-hidden {
+		display: none;
+	}
+
+	@media (max-width: 720px) {
+		.post-card {
+			/* モバイルではカードの内側余白を少しだけ縮める */
+			padding: 1.15rem 1.1rem;
+		}
+
+		.post-card-meta {
+			gap: 0.55rem 0.75rem;
+			margin-bottom: 0.75rem;
+		}
+
+		.post-card-date {
+			font-size: 0.76rem;
+		}
+
+		.post-card-tag {
+			font-size: 0.68rem;
+		}
+
+		.post-card-title {
+			font-size: 1.08rem;
+			line-height: 1.42;
+		}
+	}
+</style>

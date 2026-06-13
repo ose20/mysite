@@ -1,141 +1,264 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
-
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
-		0 16px 32px rgba(var(--gray), 33%);
-}
-body {
-	font-family: var(--font-atkinson);
-	margin: 0;
-	padding: 0;
-	text-align: left;
-	background: linear-gradient(var(--gray-gradient)) no-repeat;
-	background-size: 100% 600px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
-	line-height: 1.7;
-}
-main {
-	width: 720px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
-	line-height: 1.2;
-}
-h1 {
-	font-size: 3.052em;
-}
-h2 {
-	font-size: 2.441em;
-}
-h3 {
-	font-size: 1.953em;
-}
-h4 {
-	font-size: 1.563em;
-}
-h5 {
-	font-size: 1.25em;
-}
-strong,
-b {
-	font-weight: 700;
-}
-a {
-	color: var(--accent);
-}
-a:hover {
-	color: var(--accent);
-}
-p {
-	margin-bottom: 1em;
-}
-.prose p {
-	margin-bottom: 2em;
-}
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
-input {
-	font-size: 16px;
-}
-table {
-	width: 100%;
-}
-img {
-	max-width: 100%;
-	height: auto;
-	border-radius: 8px;
-}
-code {
-	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
-}
-pre {
-	padding: 1.5em;
-	border-radius: 8px;
-}
-pre > code {
-	all: unset;
-}
-blockquote {
-	border-left: 4px solid var(--accent);
-	padding: 0 0 0 20px;
-	margin: 0;
-	font-size: 1.333em;
-}
-hr {
-	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
-}
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
-	}
-	main {
-		padding: 1em;
-	}
+  /* ページ全体の土台色 */
+  --page-background: #ffffff;
+
+  /* header, footer, カードなど「面」として見える部分の色 */
+  --header-background: #fffdfa;
+  --surface-background: #fffaf5;
+  --surface-hover: #f8f0e8;
+
+  /* 線や区切りに使う色 */
+  --header-border: #ded3c8;
+
+  /* 基本の文字色。title は少し個性を出し、muted は補助情報用に薄くする */
+  --site-title-color: #75695f;
+  --text-color: #2c2723;
+  --muted-text-color: #74695f;
+
+  /* ナビゲーションで現在地を示す active 状態の色 */
+  --nav-active-background: #f7e3e8;
+  --nav-active-border: #d9a6b4;
+  --nav-active-text: #8a4c62;
+
+  /* 記事カードのタイトル色。hover 時だけ少し強くして、押せることを伝える */
+  --post-title-color: #a65f78;
+  --post-title-hover-color: #8e4662;
+
+  /* 記事詳細の h2 用。本文の区切りを見せるため、タイトルより冷静な青系にする */
+  --heading-2-color: #35597d;
+  --heading-2-border: #9eb8d3;
+
+  /* 本文中リンク用。通常テキストとは区別しつつ、読みづらくならない色を使う */
+  --prose-link-color: #6f4c83;
+  --prose-link-hover-color: #8a4c62;
+
+  /* タグ用の青系配色。タイトルのピンク系と役割を分けるため別の色相にしている */
+  --tag-background: #e7f0f8;
+  --tag-border: #9eb8d3;
+  --tag-text: #42627f;
+
+  /* ダークモード切り替えトグル専用の色 */
+  --toggle-background: #d9cec4;
+  --toggle-icon: #74685f;
+  --toggle-thumb: #ffffff;
 }
 
-.sr-only {
-	border: 0;
-	padding: 0;
-	margin: 0;
-	position: absolute !important;
-	height: 1px;
-	width: 1px;
-	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
-	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
-	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
-	white-space: nowrap;
+html.dark {
+  /* dark クラスが付いたときは、上と同じ役割の変数をダークモード用の値に上書きする */
+  --page-background: #303746;
+  --header-background: #3a4252;
+  --surface-background: #414b5c;
+  --surface-hover: #4a5568;
+  --header-border: #5b677d;
+  --site-title-color: #edf2f7;
+  --text-color: #e6ebf2;
+  --muted-text-color: #c4ccd8;
+  --nav-active-background: #5a4354;
+  --nav-active-border: #c28da1;
+  --nav-active-text: #f3d8e3;
+  --post-title-color: #f0bfd1;
+  --post-title-hover-color: #ffd3e1;
+  --heading-2-color: #d7e7f7;
+  --heading-2-border: #6f87a6;
+  --prose-link-color: #cfdcf0;
+  --prose-link-hover-color: #f0bfd1;
+  --tag-background: #43546a;
+  --tag-border: #8fb0d1;
+  --tag-text: #d7e7f7;
+  --toggle-background: #4a5568;
+  --toggle-icon: #d8dee9;
+  --toggle-thumb: #8fbcbb;
+}
+
+html {
+  /* html 全体に背景色と基本文字色を渡して、ページ全体の基準にする */
+  background-color: var(--page-background);
+  color: var(--text-color);
+}
+
+body {
+  /* body の初期余白を消し、サイト全体の基本フォントと行間をここで決める */
+  margin: 0;
+  font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans CJK JP", sans-serif;
+  /* line-height は行と行の間隔。本文を読みやすくするため少し広めにしている */
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+  # URL のカード化
+  remark-link-card-plus: https://github.com/okaryo/remark-link-card-plus
+
+  ## 生成される HTML の構造
+  class 名の prefix の remark-link-card-plus__ を省略
+  div.container
+  └─ a.card
+     ├─ div.main
+     │  ├─ div.content
+     │  │  ├─ div.title
+     │  │  └─ div.description
+     │  └─ div.meta
+     │     ├─ img.favicon
+     │     └─ span.url
+     └─ div.thumbnail
+        └─ img.image
+
+  ## 大雑把な要件
+  - container
+    - 横長のカードみたいに
+    - 横幅は親要素より少し小さくする
+  - card
+    - main, thumbnail で横に並べる (画像を右に)
+  - main
+    - content, meta は縦に並べる
+  - content
+    - title, description ともに 2 行まで確保できる
+  - meta
+    - favicon, url は横に並べ、右寄せする
+    - favicon は url にできるだけくっつける
+  - thumnail
+    - image の中心の高さ = カードの真ん中の高さ
+    - 縦横比をいじらずいい感じに拡大縮小してカードに大きさを合わせる
+      - 見切れ発生 OK
+
+*/
+
+.remark-link-card-plus__container {
+  margin: 1.5rem auto;
+  width: 85%;
+}
+
+.remark-link-card-plus__card {
+  /* main, thumbnail を横に並べるため flex */
+  display: flex;
+  /* なんとなく幅いっぱい使ってくれそう normal でも変わらないかも */
+  align-items: stretch;
+  /* 子要素同士の間隔なので gap がよい。margin は各要素が自分の外側に作る余白 */
+  gap: 1rem;
+  height: 5rem;
+  /* カードと子要素に対しての余白確保 */
+  padding: 1rem;
+  border: 1.5px solid var(--header-border);
+  border-radius: 16px;
+  background: var(--surface-background);
+  color: inherit;
+  /* この文脈ではリンクテキストの下線を消す */
+  text-decoration: none;
+  /* カードからはみ出たテキストは表示しない */
+  overflow: hidden;
+}
+
+.remark-link-card-plus__main {
+  /* 兄弟の thumbnail とセット */
+  /* flex-grow: 1; flex-shrink: 1; flex-basis: 75% の略 */
+  /* flex-grow:1 なので必要に応じてのびてよし */
+  /* flex-shrink: 1 なので必要に応じて縮んでよし */
+  /* flex-basis: 75% なので大体 75% くらいの幅をつかう */
+  flex: 1 1 75%;
+  /* その下と併せて縦に積む flex */
+  display: flex;
+  flex-direction: column;
+  /* 子要素同士の幅 */
+  gap: 0.35rem;
+}
+
+.remark-link-card-plus__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 auto;
+  /* 必要ならちゃんと縮んでよいとするおまじないっぽい */
+  min-width: 0;
+}
+
+.remark-link-card-plus__title {
+  font-size: 1rem;
+  /* 1行分の文字の箱の高さを文字サイズの 1.2倍に */
+  line-height: 1.2;
+  
+  /* ここからの 4 つはセット、ちょっと癖がある書き方っぽい */
+  /* n 行で打ち切り残りは ... にする */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  /* box におさまらないテキストは隠す */
+  /* -webkit-line-clamp の設定だけだとだめ */
+  overflow: hidden;
+}
+
+.remark-link-card-plus__description {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.remark-link-card-plus__meta {
+  /* ↓ 子要素としての振る舞い */
+  flex: 0 0 20%;
+  /* url だけじゃなくて favicon も右寄せになる */
+  /* meta 自体が右による(左側の余白を margin で全部吸うので) */
+  margin-left: auto;
+  /* favicon は下に押し付けたい */
+  /* 縦方向の余白を全部吸う */
+  margin-top: auto;
+  min-height: 1rem;
+
+  /* ↓ 親要素としての振る舞い */
+  display: flex;
+  /* 子要素をさらに右寄せする */
+  justify-content: flex-end;
+  /* favicon と url の高さを合わせる */
+  align-items: center;
+  /* favicon と url の間隔 */
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.remark-link-card-plus__favicon {
+  width: 1rem;
+  height: 1rem;
+  /* 伸び縮みしないように */
+  flex: 0 0 auto;
+}
+
+.remark-link-card-plus__url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* 改行させない */
+  white-space: nowrap;
+  font-size: 0.65rem;
+}
+
+.remark-link-card-plus__thumbnail {
+  /* 兄弟の main とセット */
+  /* こっちは grow, shrink ともに 0 なので伸びたり縮んだりさせない */
+  flex: 0 0 25%;
+  max-width: 25%;
+  /* img の調整, flex のデフォルトは横方向 */
+  /* align-items は交差軸, 今回は縦(高さ) の調整になる */
+  /* つまり中央の高さに配置 */
+  display: flex;
+  align-items: center;
+
+  /* 見切れ OK */
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* link-card の小端末対応 */
+/* 差分だけ上書きする方式 */
+@media (max-width: 720px) {
+  .remark-link-card-plus__container {
+    margin: 1.0rem auto;
+    width: 100%;
+  }
+
+  .remark-link-card-plus__card {
+    padding: 0.8rem;
+    height: 6rem;
+  }
 }

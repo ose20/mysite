@@ -1,0 +1,102 @@
+---
+import BlogPostCard from "./BlogPostCard.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+---
+
+<section class="recent-posts" aria-labelledby="recent-posts-title">
+	<div class="recent-posts-head">
+		<h2 id="recent-posts-title" class="recent-posts-title">最近の記事</h2>
+		<a class="recent-posts-link" href="/blog">すべて見る</a>
+	</div>
+	<div class="recent-posts-grid">
+		{
+			posts.map((post) => (
+				<BlogPostCard
+					href={`/blog/${post.id}/`}
+					title={post.data.title}
+					pubDate={post.data.pubDate}
+					tags={post.data.tags ?? []}
+				/>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.recent-posts {
+		/* what: 上のセクションと見た目で区切る */
+		padding-top: 2rem;
+		border-top: 1px solid var(--header-border);
+	}
+
+	.recent-posts-head {
+		/* what: 見出しと「すべて見る」を同じ行に置く */
+		/* how: justify-content: space-between は左右の端に押し広げる書き方 */
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.75rem 1.5rem;
+		margin-bottom: 1.2rem;
+	}
+
+	.recent-posts-title {
+		margin: 0;
+		color: var(--post-title-color);
+		font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", "Noto Sans CJK JP", sans-serif;
+		font-size: 1.4rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		line-height: 1.3;
+	}
+
+	.recent-posts-link {
+		color: var(--muted-text-color);
+		font-size: 0.92rem;
+		font-weight: 500;
+		text-decoration: none;
+	}
+
+	.recent-posts-link:hover,
+	.recent-posts-link:focus-visible {
+		color: var(--text-color);
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+
+	.recent-posts-grid {
+		/* what: 記事カードを 2 列で並べる */
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	@media (max-width: 720px) {
+		.recent-posts {
+			padding-top: 1.6rem;
+		}
+
+		.recent-posts-title {
+			font-size: 1.2rem;
+		}
+
+		.recent-posts-head {
+			margin-bottom: 1rem;
+		}
+
+		.recent-posts-link {
+			font-size: 0.88rem;
+		}
+
+		.recent-posts-grid {
+			/* モバイルでは 1 列だけにして、カードを縦に積む */
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

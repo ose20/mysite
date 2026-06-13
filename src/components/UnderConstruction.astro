@@ -1,0 +1,53 @@
+---
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<section class="under-construction" aria-labelledby="under-construction-title">
+	<p class="under-construction-label">工事中</p>
+	<h1 id="under-construction-title" class="under-construction-title">{title}</h1>
+	<p class="under-construction-description">{description}</p>
+</section>
+
+<style>
+	.under-construction {
+		max-width: 42rem;
+		margin: 0 auto;
+		padding: 5rem 1.5rem 5.5rem;
+		text-align: center;
+	}
+
+	.under-construction-label,
+	.under-construction-title,
+	.under-construction-description {
+		margin: 0;
+	}
+
+	.under-construction-label {
+		color: var(--muted-text-color);
+		font-size: 0.84rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.under-construction-title {
+		margin-top: 0.8rem;
+		color: var(--post-title-color);
+		font-family: "Hiragino Sans", "Yu Gothic", YuGothic, "Trebuchet MS", "Noto Sans CJK JP", sans-serif;
+		font-size: 2rem;
+		font-weight: 600;
+		line-height: 1.2;
+	}
+
+	.under-construction-description {
+		margin-top: 1rem;
+		color: var(--muted-text-color);
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+</style>
