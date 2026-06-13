@@ -1,8 +1,5 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import AndoainImage from "../assets/home/andoain.jpg";
-import AndoainSkillImage from "../assets/home/andoain-skill.jpg";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
@@ -17,7 +14,7 @@ const recentPosts = (await getCollection("blog"))
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title="Home" description="個人メディアとして育てていくためのホームページ" />
+		<BaseHead title="Home" description="ose20の個人サイト" />
 	</head>
 	<body>
 		<Header />
