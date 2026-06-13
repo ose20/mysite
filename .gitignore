@@ -24,8 +24,8 @@ pnpm-debug.log*
 .idea/
 .vscode/
 .codex/
+.wrangler/
 
 # remark-link-card-plus
 public/remark-link-card-plus
-
 
