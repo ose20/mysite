@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { describe } from 'astro:schema';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -50,8 +49,13 @@ const { Content, headings } = await render(post);
 
 const autoDescription = 
 	post.data.description ?? extractDescription(post.body);
+const postData = {
+	...post.data,
+	description: autoDescription, // 上書き
+	headings: headings,
+}
 ---
 
-<BlogPost {...post.data} description={autoDescription} headings={headings}>
+<BlogPost {...postData}>
 	<Content />
 </BlogPost>
