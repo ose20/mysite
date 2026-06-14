@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { describe } from 'astro:schema';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -9,12 +10,48 @@ export async function getStaticPaths() {
 		props: post,
 	}));
 }
+
 type Props = CollectionEntry<'blog'>;
+
+// blog 本文から、コードブロックやヘッダなどを除いた部分を抽出する
+function extractDescription(body: string | undefined) {
+	if (!body) return '';
+	const lines = body.split('\n').map((line) => line.trim());
+
+	const description = [];
+	let inCodeBlock = false;
+	for (const line of lines) {
+		if (line.startsWith('```')) {
+			inCodeBlock = !inCodeBlock;
+			continue;
+		}
+		if (inCodeBlock) {
+			continue;
+		}
+		// 最初の一段落までを対象にしたい場合はこれ使う
+		//if (!line) {
+			//if (description.length > 0) {
+				//break;
+			//} else {
+				//continue;
+			//}
+		//}
+		if (line.startsWith('#')) continue;
+		if (line.startsWith('![')) continue;
+		if (line.startsWith('https://')) continue;
+		description.push(line);
+	}
+
+	return description.join(' ').slice(0, 120);
+}
 
 const post = Astro.props;
 const { Content, headings } = await render(post);
+
+const autoDescription = 
+	post.data.description ?? extractDescription(post.body);
 ---
 
-<BlogPost {...post.data} headings={headings}>
+<BlogPost {...post.data} description={autoDescription} headings={headings}>
 	<Content />
 </BlogPost>
