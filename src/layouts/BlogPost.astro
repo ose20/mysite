@@ -15,12 +15,12 @@ type Props = CollectionEntry<'blog'>['data'] & {
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 const articleUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
-const pageDescription = description ?? `${title} に関する記事です。`;
+const pageDescription = description ?? `${title} に関する記事`;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={pageDescription} />
+		<BaseHead title={title} description={pageDescription} image={heroImage} />
 		<style>
 			main {
 				/* what: 記事ページ全体の横幅と余白 */

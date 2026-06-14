@@ -59,6 +59,7 @@ const metaImageURL = new URL(imagePath, Astro.url);
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={metaImageURL} />
+<meta property="og:image:alt" content={metaTitle} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
@@ -66,3 +67,4 @@ const metaImageURL = new URL(imagePath, Astro.url);
 <meta property="twitter:title" content={metaTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={metaImageURL} />
+<meta property="twitter:image:alt" content={metaTitle} />
