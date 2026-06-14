@@ -13,7 +13,7 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	headings: MarkdownHeading[];
 }
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, headings } = Astro.props as Props;
 const articleUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
 const pageDescription = description ?? `${title} に関する記事`;
 ---
@@ -225,7 +225,7 @@ const pageDescription = description ?? `${title} に関する記事`;
 			<!-- PC 幅では共有と目次を右カラムに固定表示する -->
 			<aside class="post-sidebar">
 				<PostSharePanel title={title} url={articleUrl} />
-				<TableOfContents headings={Astro.props.headings} />
+				<TableOfContents headings={headings} />
 			</aside>
 		</main>
 		<Footer />

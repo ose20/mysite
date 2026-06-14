@@ -41,7 +41,7 @@ function extractDescription(body: string | undefined) {
 		description.push(line);
 	}
 
-	return description.join(' ').slice(0, 120);
+	return description.join(' ').slice(0, 50);
 }
 
 const post = Astro.props;
