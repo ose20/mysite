@@ -3,20 +3,25 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
 
 interface Props {
 	title: string;
 	description: string;
-	image?: ImageMetadata;
+	image?: ImageMetadata | string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const DEFAULT_OG_IMAGE = '/apple-touch-icon.png';
+
+const { title, description, image = DEFAULT_OG_IMAGE } = Astro.props;
 const metaTitle = title === "Home" ? SITE_TITLE : `${title} | ${SITE_TITLE}`;
+// what: OGP 画像の URL を絶対 URL にそろえる
+// how: Astro の画像メタデータなら .src を使い、文字列パスならそのまま URL 化する
+const imagePath = typeof image === 'string' ? image : image.src;
+const metaImageURL = new URL(imagePath, Astro.url);
 ---
 
 <!-- Global Metadata -->
@@ -53,11 +58,11 @@ const metaTitle = title === "Home" ? SITE_TITLE : `${title} | ${SITE_TITLE}`;
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta property="og:image" content={metaImageURL} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={metaTitle} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta property="twitter:image" content={metaImageURL} />
