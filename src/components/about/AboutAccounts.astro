@@ -1,0 +1,126 @@
+---
+import type { AboutAccount } from "../../data/about";
+import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
+
+interface Props {
+	accounts: AboutAccount[];
+}
+
+const { accounts } = Astro.props;
+---
+
+<section class="about-section" aria-labelledby="about-accounts-title">
+	<div class="about-section-head">
+		<p class="about-section-kicker">Accounts</p>
+	</div>
+	<ul class="about-account-list">
+			{
+				accounts.map((account) => (
+					<li class="about-account-item">
+						<a href={account.url} class="about-account-link" target="_blank" rel="noreferrer">
+							<span class="about-account-name">{account.label}</span>
+							<span class="about-account-icon" aria-hidden="true">
+								<ExternalLinkIcon />
+							</span>
+						</a>
+					</li>
+				))
+			}
+	</ul>
+</section>
+
+<style>
+	.about-section {
+		padding: 1.5rem;
+		border: 1px solid var(--header-border);
+		border-radius: 18px;
+		background-color: var(--surface-background);
+	}
+
+	.about-section-head {
+		margin-bottom: 1rem;
+	}
+
+	.about-section-kicker,
+	.about-section-title {
+		margin: 0;
+	}
+
+	.about-section-kicker {
+		color: var(--muted-text-color);
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.about-section-title {
+		margin-top: 0.4rem;
+		color: var(--post-title-color);
+		font-size: 1.35rem;
+		line-height: 1.3;
+	}
+
+	.about-account-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.about-account-item {
+		display: flex;
+	}
+
+	.about-account-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.8rem 0.95rem;
+		border: 1px solid var(--header-border);
+		border-radius: 14px;
+		background-color: var(--header-background);
+		color: var(--text-color);
+		text-decoration: none;
+		transition:
+			border-color 0.2s ease,
+			background-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.about-account-link:hover {
+		border-color: var(--link-color);
+		background-color: var(--surface-background);
+		transform: translateY(-1px);
+	}
+
+	.about-account-link:focus-visible {
+		outline: 2px solid var(--link-color);
+		outline-offset: 3px;
+	}
+
+	.about-account-name {
+		color: var(--text-color);
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	.about-account-icon {
+		display: inline-flex;
+		width: 1rem;
+		height: 1rem;
+		color: var(--muted-text-color);
+	}
+
+	@media (max-width: 720px) {
+		.about-section {
+			padding: 1.2rem;
+		}
+
+		.about-section-title {
+			font-size: 1.2rem;
+		}
+	}
+</style>

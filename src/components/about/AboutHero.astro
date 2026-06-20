@@ -1,0 +1,128 @@
+---
+interface Props {
+	username: string;
+	biography: string[];
+}
+
+const { username, biography } = Astro.props;
+---
+
+<section class="about-hero">
+	<p class="about-hero-label">About</p>
+	<div class="about-hero-content">
+		<div class="about-hero-icon-frame" aria-hidden="true">
+			<img
+				class="about-hero-icon"
+				src="/icon.png"
+				alt=""
+				width="160"
+				height="160"
+			/>
+		</div>
+		<div class="about-hero-copy">
+			<h1 class="about-hero-name">{username}</h1>
+			<div class="about-hero-bio">
+				{biography.map((paragraph) => <p>{paragraph}</p>)}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.about-hero {
+		display: grid;
+		gap: 1rem;
+		padding: 1.5rem;
+		border: 1px solid var(--header-border);
+		border-radius: 20px;
+		background: var(--surface-background);
+	}
+
+		.about-hero-content {
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
+		}
+
+		.about-hero-copy {
+			/* 余白を食って広がってよし */
+			flex: 1;
+			min-width: 0;
+		}
+
+	.about-hero-icon-frame {
+		width: 10rem;
+		height: 10rem;
+		border-radius: 24px;
+		overflow: hidden;
+		border: 1px solid var(--header-border);
+		background-color: var(--header-background);
+	}
+
+	.about-hero-icon {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1.8) translateX(-5%) translateY(17%);
+		transform-origin: center;
+	}
+
+	.about-hero-label,
+	.about-hero-name {
+		margin: 0;
+	}
+
+	.about-hero-label {
+		color: var(--muted-text-color);
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.about-hero-name {
+		color: var(--post-title-color);
+		font-family: "Trebuchet MS", "Avenir Next", Avenir, "Helvetica Neue", sans-serif;
+		font-size: 2.1rem;
+		line-height: 1.15;
+	}
+
+	.about-hero-bio {
+		margin-top: 1rem;
+		color: var(--text-color);
+		font-size: 1rem;
+		line-height: 1.9;
+	}
+
+	.about-hero-bio p {
+		margin: 0;
+	}
+
+	/* 直前に p がある任意の p  */
+	.about-hero-bio p + p {
+		margin-top: 0.9rem;
+	}
+
+	@media (max-width: 720px) {
+		.about-hero {
+			padding: 1.2rem;
+		}
+
+		.about-hero-content {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 1rem;
+		}
+
+		.about-hero-icon-frame {
+			width: 7.5rem;
+			height: 7.5rem;
+			align-self: center;
+		}
+
+		.about-hero-name {
+			text-align: center;
+			font-size: 1.8rem;
+		}
+	}
+</style>

@@ -1,0 +1,132 @@
+---
+import type { AboutMiscItem } from "../../data/about";
+import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
+
+interface Props {
+	items: AboutMiscItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="about-section" aria-labelledby="about-misc-title">
+	<div class="about-section-head">
+		<p class="about-section-kicker">Misc</p>
+	</div>
+
+	<div class="about-misc-grid">
+		{
+			items.map((item) => (
+				<section class="about-misc-card">
+					<h3 class="about-misc-title">{item.title}</h3>
+					{
+						item.imageSrc && (
+							<img
+								src={item.imageSrc}
+								alt={item.imageAlt ?? item.title}
+								class="about-misc-image"
+								loading="lazy"
+							/>
+						)
+					}
+					{
+						item.url && (
+							<a href={item.url} class="about-misc-link" target="_blank" rel="noreferrer">
+								<span>{item.description ?? item.url}</span>
+								<span class="about-misc-icon" aria-hidden="true">
+									<ExternalLinkIcon />
+								</span>
+							</a>
+						)
+					}
+				</section>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.about-section {
+		padding: 1.5rem;
+		border: 1px solid var(--header-border);
+		border-radius: 18px;
+		background-color: var(--surface-background);
+	}
+
+	.about-section-head {
+		margin-bottom: 1rem;
+	}
+
+	.about-section-kicker {
+		margin: 0;
+		color: var(--muted-text-color);
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.about-misc-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1rem;
+	}
+
+	.about-misc-card {
+		display: grid;
+		gap: 0.9rem;
+		padding: 1rem;
+		border: 1px solid var(--header-border);
+		border-radius: 14px;
+		background-color: var(--header-background);
+	}
+
+	.about-misc-title {
+		margin: 0;
+		color: var(--text-color);
+		font-size: 1rem;
+		line-height: 1.4;
+	}
+
+	.about-misc-image {
+		display: block;
+		width: min(100%, 32rem);
+		height: auto;
+		margin: 0 auto;
+		border-radius: 12px;
+		border: 1px solid var(--header-border);
+		background-color: var(--surface-background);
+	}
+
+	.about-misc-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		width: fit-content;
+		color: var(--link-color);
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+	.about-misc-link:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+
+	.about-misc-link:focus-visible {
+		outline: 2px solid var(--link-color);
+		outline-offset: 3px;
+		border-radius: 6px;
+	}
+
+	.about-misc-icon {
+		display: inline-flex;
+		width: 1rem;
+		height: 1rem;
+	}
+	@media (max-width: 720px) {
+		.about-section {
+			padding: 1.2rem;
+		}
+	}
+</style>

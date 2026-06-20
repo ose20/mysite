@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import BlogPostCard from "../../components/BlogPostCard.astro";
-import BlogTagFilter from "../../components/BlogTagFilter.astro";
-import Footer from "../../components/Footer.astro";
-import Header from "../../components/Header.astro";
+import BaseHead from "../../components/site/BaseHead.astro";
+import BlogPostCard from "../../components/blog/BlogPostCard.astro";
+import BlogTagFilter from "../../components/blog/BlogTagFilter.astro";
+import Footer from "../../components/site/Footer.astro";
+import Header from "../../components/site/Header.astro";
 import RssIcon from "../../components/icons/RssIcon.astro";
 
 const posts = (await getCollection("blog"))
