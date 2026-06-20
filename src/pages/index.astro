@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
-import HomeSection from "../components/HomeSection.astro";
-import RecentPostsGrid from "../components/RecentPostsGrid.astro";
+import BaseHead from "../components/site/BaseHead.astro";
+import Footer from "../components/site/Footer.astro";
+import Header from "../components/site/Header.astro";
+import HomeSection from "../components/home/HomeSection.astro";
+import RecentPostsGrid from "../components/blog/RecentPostsGrid.astro";
 
 const recentPosts = (await getCollection("blog"))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())

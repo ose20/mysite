@@ -1,0 +1,98 @@
+---
+import type { AboutInterestCategory } from "../../data/about";
+
+interface Props {
+	category: AboutInterestCategory;
+}
+
+const { category } = Astro.props;
+---
+
+<details class="about-category-card">
+	<summary class="about-category-summary">
+		<span class="about-category-title">{category.title}</span>
+		<span class="about-category-hint">クリックで開く</span>
+	</summary>
+
+	<div class="about-category-body">
+		{
+			category.items.map((item) => (
+				<section class="about-item">
+					<h3 class="about-item-name">{item.name}</h3>
+					<div class="about-item-description">
+						{item.description.map((paragraph) => <p>{paragraph}</p>)}
+					</div>
+				</section>
+			))
+		}
+	</div>
+</details>
+
+<style>
+	.about-category-card {
+		border: 1px solid var(--header-border);
+		border-radius: 18px;
+		background-color: var(--surface-background);
+		overflow: hidden;
+	}
+
+	.about-category-summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 1.1rem;
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.about-category-summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.about-category-title {
+		color: var(--post-title-color);
+		font-size: 1.1rem;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	.about-category-hint {
+		color: var(--muted-text-color);
+		font-size: 0.82rem;
+		white-space: nowrap;
+	}
+
+	.about-category-card[open] .about-category-summary {
+		border-bottom: 1px solid var(--header-border);
+		background-color: var(--header-background);
+	}
+
+	.about-category-body {
+		display: grid;
+		gap: 1rem;
+		padding: 1rem 1.1rem 1.15rem;
+	}
+
+	.about-item-name {
+		margin: 0;
+		color: var(--text-color);
+		font-size: 1rem;
+		line-height: 1.35;
+	}
+
+	.about-item-description {
+		margin-top: 0.45rem;
+		color: var(--muted-text-color);
+		font-size: 0.96rem;
+		line-height: 1.8;
+	}
+
+	.about-item-description :global(p) {
+		margin: 0;
+	}
+
+	.about-item-description :global(p + p) {
+		margin-top: 0.55rem;
+	}
+</style>
