@@ -135,7 +135,7 @@ body {
   align-items: stretch;
   /* 子要素同士の間隔なので gap がよい。margin は各要素が自分の外側に作る余白 */
   gap: 1rem;
-  height: 5rem;
+  height: 7rem;
   /* カードと子要素に対しての余白確保 */
   padding: 1rem;
   border: 1.5px solid var(--header-border);
