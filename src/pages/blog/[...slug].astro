@@ -27,6 +27,8 @@ function extractDescription(body: string | undefined) {
 		if (inCodeBlock) {
 			continue;
 		}
+		if (line.startsWith('import ')) continue;
+  	if (line.startsWith('export ')) continue;
 		// 最初の一段落までを対象にしたい場合はこれ使う
 		//if (!line) {
 			//if (description.length > 0) {
