@@ -41,6 +41,14 @@ The `src/content/` directory contains "collections" of related Markdown and MDX 
 
 Any static assets, like images, can be placed in the `public/` directory.
 
+## Blog Images
+
+- Place post-specific images in `src/assets/blog/<post-slug>/`
+- Import images in `src/content/blog/*.mdx` with `import { Image } from "astro:assets"`
+- Use `<Image />` for inline post images instead of Markdown `![]()`
+- Use `figure` and `figcaption` when a caption is needed
+- Reserve `public/` for shared static assets such as favicons or site-wide images
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
