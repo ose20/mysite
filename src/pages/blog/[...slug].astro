@@ -27,8 +27,6 @@ function extractDescription(body: string | undefined) {
 		if (inCodeBlock) {
 			continue;
 		}
-		if (line.startsWith('import ')) continue;
-  	if (line.startsWith('export ')) continue;
 		// 最初の一段落までを対象にしたい場合はこれ使う
 		//if (!line) {
 			//if (description.length > 0) {
@@ -40,6 +38,8 @@ function extractDescription(body: string | undefined) {
 		if (line.startsWith('#')) continue;
 		if (line.startsWith('![')) continue;
 		if (line.startsWith('https://')) continue;
+		if (line.startsWith('import')) continue;
+  	if (line.startsWith('export')) continue;
 		description.push(line);
 	}
 
